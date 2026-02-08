@@ -1,0 +1,122 @@
+body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* قلب اتجاه الأزرار */
+.roles {
+    flex-direction: row-reverse;
+}
+
+/* محاذاة النصوص العربية */
+h1, h2, h3, p, a {
+    font-family: "Tahoma", "Arial", sans-serif;
+}
+
+/* كروت المستخدم */
+.role-card {
+    text-align: center;
+}
+
+/* ====== Mobile Sidebar - Hidden by Default ====== */
+@media (max-width: 992px) {
+
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -260px; /* مخفي خارج الشاشة */
+        height: 100vh !important;
+        width: 260px !important;
+        background: #2F7D32 !important;
+        padding-top: 25px !important;
+        transition: 0.4s ease;
+        z-index: 2000 !important;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    }
+
+    /* عندما يصبح active يظهر */
+    .sidebar.active {
+        left: 0 !important;
+    }
+
+    /* زر القائمة */
+    .menu-btn {
+        font-size: 26px;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+    /* خلفية عند ظهور القائمة */
+    .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        z-index: 1500;
+    }
+
+    .menu-overlay.active {
+        display: block;
+    }
+
+    /* إصلاح ترتيب العناصر */
+    .top-bar {
+        z-index: 1000;
+    }
+
+    /* إلغاء تحويل الشريط لروابط أفقية */
+    .sidebar a {
+        display: block !important;
+        width: 100% !important;
+        margin: 10px 0 !important;
+        text-align: right !important;
+        font-size: 16px !important;
+        background: none !important;
+    }
+}
+
+
+/* Fix mobile */
+@media (max-width: 992px) {
+    html[lang="ar"] .sidebar {
+        right: -260px !important;
+        left: auto !important;
+    }
+    html[lang="ar"] .sidebar.active {
+        right: 0 !important;
+    }
+    html[lang="ar"] .main-content {
+        margin-right: 0 !important;
+    }
+}
+
+/* التعديل فقط للغة العربية */
+html[lang="ar"] .sidebar a {
+    text-align: right !important;
+    padding-right: 20px !important;
+    padding-left: 10px !important;
+}
+
+/* لضبط الأيقونات في اليمين */
+html[lang="ar"] .sidebar a i {
+    margin-left: 10px !important;
+    margin-right: 0 !important;
+}
+
+/* =========================
+   FORCE RTL SIDEBAR FIX
+   ========================= */
+html[lang="ar"] .sidebar a {
+    direction: rtl !important;
+    text-align: right !important;
+    justify-content: flex-end !important; /* يجعل النص كله على اليمين */
+    padding-right: 20px !important;
+}
+
+html[lang="ar"] .sidebar a i {
+    margin-left: 12px !important;  /* يبعد الأيقونة قليلاً عن النص */
+    margin-right: 0 !important;
+}

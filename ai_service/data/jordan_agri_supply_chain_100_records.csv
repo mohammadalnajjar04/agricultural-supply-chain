@@ -1,0 +1,101 @@
+record_id,farmer_name,governorate,crop_name,farm_area_dunum,production_kg,price_per_kg_jod,store_name,order_quantity_kg,transporter_type,delivery_days,delivery_status
+1,Ahmed Khalil,Irbid,Tomato,8,3200,0.35,Green Market,500,Pickup,1,Delivered
+2,Mohammad Saleh,Irbid,Potato,10,5000,0.30,Fresh Basket,700,Pickup,2,Delivered
+3,Yousef Nassar,Ajloun,Olive,15,4200,0.90,Jordan Foods,600,Refrigerated Truck,3,Delivered
+4,Ali Haddad,Ajloun,Cucumber,6,2100,0.40,Daily Veggies,400,Pickup,1,Delivered
+5,Hassan Odeh,Amman,Tomato,7,2800,0.38,Capital Market,450,Pickup,1,Delivered
+6,Omar Zaid,Amman,Lettuce,5,1600,0.25,Fresh Basket,300,Pickup,1,Delivered
+7,Salem AbuRas,Zarqa,Onion,12,4800,0.28,Green Market,800,Small Truck,2,Delivered
+8,Khaled Awad,Zarqa,Potato,11,5200,0.32,City Store,900,Small Truck,2,Delivered
+9,Majed Shatnawi,Mafraq,Barley,20,7000,0.18,Agro Jordan,1200,Large Truck,4,Delivered
+10,Fadi Tamimi,Mafraq,Wheat,25,9000,0.20,Agro Jordan,1500,Large Truck,4,Delivered
+11,Rami Saad,Karak,Tomato,9,3400,0.36,South Market,500,Pickup,2,Delivered
+12,Mahmoud Rababa,Karak,Cucumber,6,2000,0.42,South Market,350,Pickup,2,Delivered
+13,Nidal Qasem,Tafilah,Potato,8,3900,0.31,Daily Veggies,600,Small Truck,3,Delivered
+14,Basel Harahsheh,Tafilah,Onion,10,4300,0.29,City Store,700,Small Truck,3,Delivered
+15,Anas Huneiti,Maan,Tomato,7,2600,0.40,Desert Market,400,Pickup,3,Delivered
+16,Ibrahim Rashed,Maan,Watermelon,18,8200,0.22,Desert Market,1200,Large Truck,5,Delivered
+17,Tariq Bsoul,Aqaba,Tomato,6,2400,0.45,Red Sea Store,350,Pickup,1,Delivered
+18,Samir Fakhouri,Aqaba,Cucumber,5,1900,0.48,Red Sea Store,300,Pickup,1,Delivered
+19,Motasem Khreisat,Balqa,Potato,9,4100,0.33,Green Market,600,Small Truck,2,Delivered
+20,Ayman Dabbas,Balqa,Onion,11,4600,0.27,Fresh Basket,750,Small Truck,2,Delivered
+21,Samer Kanaan,Irbid,Tomato,9,3600,0.34,Fresh Basket,550,Pickup,1,Delivered
+22,Alaa Bani Yaseen,Irbid,Potato,12,5600,0.31,Green Market,800,Small Truck,2,Delivered
+23,Wael Khader,Ajloun,Olive,18,5000,0.95,Jordan Foods,700,Refrigerated Truck,3,Delivered
+24,Raed Samawi,Ajloun,Lettuce,6,1800,0.27,Daily Veggies,300,Pickup,1,Delivered
+25,Mahmoud Shami,Amman,Tomato,10,4000,0.37,Capital Market,600,Pickup,1,Delivered
+26,Firas AbuZaid,Amman,Cucumber,7,2300,0.41,Fresh Basket,400,Pickup,1,Delivered
+27,Yazan AlRashdan,Zarqa,Onion,14,5200,0.26,City Store,850,Small Truck,2,Delivered
+28,Osama Haddadin,Zarqa,Potato,13,6000,0.34,Green Market,950,Small Truck,2,Delivered
+29,Luay AlZoubi,Mafraq,Wheat,28,10000,0.19,Agro Jordan,1600,Large Truck,4,Delivered
+30,Moath Shdefat,Mafraq,Barley,22,7600,0.17,Agro Jordan,1300,Large Truck,4,Delivered
+31,Nasser Majali,Karak,Tomato,8,3000,0.36,South Market,450,Pickup,2,Delivered
+32,Adel Maaytah,Karak,Cucumber,7,2200,0.43,South Market,380,Pickup,2,Delivered
+33,Issa Qatawneh,Tafilah,Potato,9,4200,0.32,City Store,650,Small Truck,3,Delivered
+34,Mohammad Smadi,Tafilah,Onion,11,4700,0.28,Daily Veggies,720,Small Truck,3,Delivered
+35,Hamzeh AlOmari,Maan,Tomato,8,2900,0.41,Desert Market,420,Pickup,3,Delivered
+36,Saeed Shatnawi,Maan,Watermelon,20,9000,0.23,Desert Market,1400,Large Truck,5,Delivered
+37,Anwar Khreisat,Aqaba,Tomato,7,2600,0.46,Red Sea Store,380,Pickup,1,Delivered
+38,Nabeel AbuLail,Aqaba,Cucumber,6,2100,0.49,Red Sea Store,320,Pickup,1,Delivered
+39,Mutaz AlDweiri,Balqa,Potato,10,4500,0.34,Fresh Basket,680,Small Truck,2,Delivered
+40,Salman Odat,Balqa,Onion,12,4900,0.27,Green Market,780,Small Truck,2,Delivered
+41,Khalil Darawsheh,Irbid,Lettuce,6,1900,0.26,Daily Veggies,320,Pickup,1,Delivered
+42,Mohammad Obaidat,Irbid,Onion,13,5100,0.29,Green Market,820,Small Truck,2,Delivered
+43,Yazan Hiasat,Ajloun,Tomato,8,3100,0.37,Fresh Basket,480,Pickup,1,Delivered
+44,Aref Qudah,Ajloun,Potato,12,5500,0.33,City Store,760,Small Truck,3,Delivered
+45,Hussein AlKhaldi,Amman,Tomato,11,4200,0.39,Capital Market,650,Pickup,1,Delivered
+46,Motasem Shweihat,Amman,Lettuce,7,2000,0.28,Fresh Basket,350,Pickup,1,Delivered
+47,Sufyan AlSmadi,Zarqa,Onion,15,5800,0.27,Green Market,900,Small Truck,2,Delivered
+48,Ahmad AbuSneineh,Zarqa,Potato,14,6300,0.35,City Store,980,Small Truck,2,Delivered
+49,Rakan AlRawashdeh,Mafraq,Wheat,30,11000,0.21,Agro Jordan,1700,Large Truck,4,Delivered
+50,Laith Shdefat,Mafraq,Barley,24,8200,0.18,Agro Jordan,1400,Large Truck,4,Delivered
+51,Maher Majali,Karak,Tomato,9,3300,0.36,South Market,500,Pickup,2,Delivered
+52,Saleh AlHyari,Karak,Cucumber,8,2500,0.44,South Market,420,Pickup,2,Delivered
+53,Qasem AlTarawneh,Tafilah,Potato,10,4600,0.31,City Store,700,Small Truck,3,Delivered
+54,Fahd AlQudah,Tafilah,Onion,12,5000,0.28,Daily Veggies,780,Small Truck,3,Delivered
+55,Nasser AbuHamed,Maan,Tomato,9,3100,0.42,Desert Market,460,Pickup,3,Delivered
+56,Kamel AlRashdan,Maan,Watermelon,22,9800,0.24,Desert Market,1500,Large Truck,5,Delivered
+57,Osama AlDweiri,Aqaba,Tomato,8,2800,0.47,Red Sea Store,400,Pickup,1,Delivered
+58,Bilal AbuRumman,Aqaba,Cucumber,7,2300,0.50,Red Sea Store,340,Pickup,1,Delivered
+59,Hani AlOmari,Balqa,Potato,11,4800,0.33,Fresh Basket,720,Small Truck,2,Delivered
+60,Tamer Odat,Balqa,Onion,13,5200,0.27,Green Market,800,Small Truck,2,Delivered
+61,Ashraf AlZoubi,Irbid,Tomato,10,3900,0.36,Fresh Basket,580,Pickup,1,Delivered
+62,Muath BaniSalameh,Irbid,Potato,14,6100,0.32,City Store,850,Small Truck,2,Delivered
+63,Nabil AlShawabkeh,Ajloun,Olive,20,5600,0.97,Jordan Foods,750,Refrigerated Truck,3,Delivered
+64,Raed AlKofahi,Ajloun,Lettuce,7,2100,0.29,Daily Veggies,360,Pickup,1,Delivered
+65,Hazem AbuDayyeh,Amman,Tomato,12,4500,0.40,Capital Market,700,Pickup,1,Delivered
+66,Bashar AlMasri,Amman,Cucumber,9,2700,0.43,Fresh Basket,450,Pickup,1,Delivered
+67,Yousef AlAbdallat,Zarqa,Onion,16,6000,0.26,Green Market,950,Small Truck,2,Delivered
+68,Mohammad AlSalem,Zarqa,Potato,15,6500,0.34,City Store,1000,Small Truck,2,Delivered
+69,Faisal AlSawalha,Mafraq,Wheat,32,11500,0.20,Agro Jordan,1800,Large Truck,4,Delivered
+70,Anas AlRawashdeh,Mafraq,Barley,26,8600,0.18,Agro Jordan,1450,Large Truck,4,Delivered
+71,Khaled AlMajali,Karak,Tomato,10,3600,0.37,South Market,520,Pickup,2,Delivered
+72,Hamdan AlTarawneh,Karak,Cucumber,9,2600,0.45,South Market,440,Pickup,2,Delivered
+73,Moayad AlZedaneen,Tafilah,Potato,11,4800,0.32,City Store,720,Small Truck,3,Delivered
+74,Nasser AlHawamdeh,Tafilah,Onion,13,5300,0.28,Daily Veggies,800,Small Truck,3,Delivered
+75,Alaa AbuTayeh,Maan,Tomato,10,3400,0.41,Desert Market,500,Pickup,3,Delivered
+76,Salem AlSaid,Maan,Watermelon,24,10200,0.25,Desert Market,1600,Large Truck,5,Delivered
+77,Raed AlKhawaldeh,Aqaba,Tomato,9,3000,0.48,Red Sea Store,420,Pickup,1,Delivered
+78,Iyad AbuGhazaleh,Aqaba,Cucumber,8,2500,0.51,Red Sea Store,360,Pickup,1,Delivered
+79,Adnan AlKayed,Balqa,Potato,12,5000,0.34,Fresh Basket,750,Small Truck,2,Delivered
+80,Walid AlRifai,Balqa,Onion,14,5400,0.27,Green Market,820,Small Truck,2,Delivered
+81,Muneer AlZoubi,Irbid,Tomato,11,4100,0.35,Fresh Basket,600,Pickup,1,Delivered
+82,Rami BaniAtta,Irbid,Potato,15,6600,0.31,City Store,900,Small Truck,2,Delivered
+83,Sameer AlQudah,Ajloun,Olive,22,6000,0.98,Jordan Foods,820,Refrigerated Truck,3,Delivered
+84,Ammar AlRashdan,Ajloun,Lettuce,8,2300,0.30,Daily Veggies,380,Pickup,1,Delivered
+85,Yahia AbuRumman,Amman,Tomato,13,4800,0.39,Capital Market,750,Pickup,1,Delivered
+86,Fadi AlHaddad,Amman,Cucumber,10,2900,0.42,Fresh Basket,480,Pickup,1,Delivered
+87,Mustafa AlDweiri,Zarqa,Onion,17,6200,0.26,Green Market,980,Small Truck,2,Delivered
+88,Hatem AlOmari,Zarqa,Potato,16,6800,0.35,City Store,1050,Small Truck,2,Delivered
+89,Mohannad Shdefat,Mafraq,Wheat,34,12000,0.21,Agro Jordan,1900,Large Truck,4,Delivered
+90,Karam AlRawashdeh,Mafraq,Barley,28,9000,0.19,Agro Jordan,1500,Large Truck,4,Delivered
+91,Issam AlMajali,Karak,Tomato,11,3800,0.36,South Market,560,Pickup,2,Delivered
+92,Asem AlTarawneh,Karak,Cucumber,10,2800,0.44,South Market,460,Pickup,2,Delivered
+93,Nidal AlZedaneen,Tafilah,Potato,12,5000,0.32,City Store,740,Small Truck,3,Delivered
+94,Yousef AlHawamdeh,Tafilah,Onion,14,5500,0.28,Daily Veggies,820,Small Truck,3,Delivered
+95,Bassam AbuTayeh,Maan,Tomato,11,3600,0.42,Desert Market,520,Pickup,3,Delivered
+96,Adel AlSaid,Maan,Watermelon,26,10800,0.26,Desert Market,1700,Large Truck,5,Delivered
+97,Laith AlKhawaldeh,Aqaba,Tomato,10,3200,0.49,Red Sea Store,440,Pickup,1,Delivered
+98,Sami AbuGhazaleh,Aqaba,Cucumber,9,2700,0.52,Red Sea Store,380,Pickup,1,Delivered
+99,Wael AlKayed,Balqa,Potato,13,5200,0.34,Fresh Basket,780,Small Truck,2,Delivered
+100,Mahmoud AlRifai,Balqa,Onion,15,5600,0.27,Green Market,850,Small Truck,2,Delivered
