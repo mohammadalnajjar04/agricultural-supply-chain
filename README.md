@@ -1,5 +1,5 @@
 # AI-Based Agricultural Supply Chain Management System
-
+ 
 ## Description
 A web-based platform connecting farmers, transporters, and store owners with AI-assisted decision support.  
 Helps optimize supply chain operations using AI recommendations.
