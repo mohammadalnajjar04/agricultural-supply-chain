@@ -1,4 +1,10 @@
 # Agri Supply Chain (Jordan) — Final Submission
+## AI-Based Agricultural Supply Chain Management System
+
+A web-based platform connecting farmers, transporters, and store owners with AI-assisted decision support.  
+Helps optimize supply chain operations using AI recommendations.
+
+---
 
 ## Setup (XAMPP / WAMP)
 1. Copy the folder `agri_supply_chain` into `htdocs`.
@@ -9,15 +15,21 @@
 4. Open:
    - `http://localhost/agri_supply_chain/index.php`
 
+---
+
 ## Roles
 - Farmer: add/manage products, create transport requests, view AI recommendations.
 - Transporter: browse/accept requests, update status (accepted → in_progress → delivered), view AI recommendations.
 - Store: browse products, place orders (with quantity), rate after delivery, view AI recommendations.
 
+---
+
 ## Trusted Sign Up (No Fake Accounts)
-New accounts are created with **status = pending**.
-They cannot sign in until an admin approves them.
+New accounts are created with **status = pending**.  
+They cannot sign in until an admin approves them.  
 Sign up requires a simple proof document (PDF/JPG/PNG).
+
+---
 
 ## Admin (Approve / Reject)
 - Admin login page: `auth/login.php?role=admin` (or `admin/login.php`)
@@ -27,9 +39,13 @@ Sign up requires a simple proof document (PDF/JPG/PNG).
 - Admin dashboard:
   - `admin/dashboard.php`
 
+---
+
 ## Uploads
 Uploaded verification documents are stored in:
 - `uploads/verification/`
+
+---
 
 ## Python AI Microservice (Required by report)
 The AI component is implemented as a **Python (Flask) microservice**.
@@ -44,15 +60,3 @@ The AI component is implemented as a **Python (Flask) microservice**.
 cd agri_supply_chain/ai_service
 chmod +x run_ai.sh
 ./run_ai.sh
-```
-
-### Verify it is running
-Open in browser:
-`http://127.0.0.1:5000/health`
-
-### Use inside the website
-Go to any dashboard → **AI Recommendations** → click **Generate (Python AI)**.
-
-> If you want to change the AI URL, set environment variable:
-> `AI_SERVICE_URL=http://127.0.0.1:5000`
-
