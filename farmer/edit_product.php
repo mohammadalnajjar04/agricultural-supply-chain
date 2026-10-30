@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css?v=2">
+    <link rel="stylesheet" href="../css/farmer-products-v2.css?v=1">
     <link rel="stylesheet" href="../css/brand.css?v=2">
 <link rel="stylesheet" href="../css/farmer.css?v=210">
     <?php if ($lang_code === 'ar'): ?>
@@ -121,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     <!-- FORM CARD -->
-    <div class="dashboard-box">
+    <div class="dashboard-box fpm-form">
 
     <!-- PAGE TITLE -->
     <h3 class="mt-3 mb-4 page-main-title">
@@ -147,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Quantity -->
             <div class="mb-3">
                 <label class="form-label"><b><?= ($lang_code === 'ar') ? "الكمية" : "Quantity"; ?></b></label>
-                <input type="number" name="quantity" class="form-control" placeholder="<?= ($lang_code==='ar')?'مثال: 500':'Example: 500' ?>"
+                <input type="number" min="1" step="1" name="quantity" class="form-control" placeholder="<?= ($lang_code==='ar')?'مثال: 500':'Example: 500' ?>"
                        value="<?= (int)$product['quantity']; ?>" min="1" required>
             </div>
 

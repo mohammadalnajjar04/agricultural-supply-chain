@@ -78,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css?v=2">
+    <link rel="stylesheet" href="../css/farmer-products-v2.css?v=1">
     <link rel="stylesheet" href="../css/brand.css?v=2">
     <link rel="stylesheet" href="../css/farmer.css?v=210">
 
@@ -100,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include "../includes/farmer_topbar.php"; ?></br>
 
     <!-- صندوق الفورم -->
-    <div class="dashboard-box">
+    <div class="dashboard-box fpm-form">
 
         <h3 class="mb-3 page-main-title">
             <i class="fa-solid fa-plus text-success"></i>
@@ -126,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="form-label">
                     <b><?=($lang_code==="ar"?"الكمية":"Quantity")?></b>
                 </label>
-                <input type="number" name="quantity" class="form-control" required placeholder="<?= ($lang_code==='ar')?'مثال: 500':'Example: 500' ?>">
+                <input type="number" min="1" step="1" name="quantity" class="form-control" required placeholder="<?= ($lang_code==='ar')?'مثال: 500':'Example: 500' ?>">
                 <div class="form-text"><?= ($lang_code==='ar')?'بالكيلوغرام (Kg).':'In kilograms (Kg).'; ?></div>
             </div>
 

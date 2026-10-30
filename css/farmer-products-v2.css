@@ -1,0 +1,28 @@
+/* Phase 12: Farmer product management presentation only. */
+.fpm-shell{max-width:1250px;margin:0 auto;padding:12px 0 28px}
+.fpm-heading{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.fpm-heading h1{font-size:clamp(1.4rem,2.3vw,2rem);font-weight:750;margin:0}
+.fpm-subtitle{color:#64748b;font-size:.94rem;margin:6px 0 0}
+.fpm-add{display:inline-flex;gap:8px;align-items:center;text-decoration:none;background:#167c4c;color:white;padding:10px 16px;border-radius:12px;font-weight:650}
+.fpm-add:hover{background:#11613b;color:white}
+.fpm-tools{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.fpm-search,.fpm-select{border:1px solid #cbd5e1;border-radius:10px;padding:11px 12px;background:#fff;color:#172033;min-height:44px}
+.fpm-search{flex:1 1 240px;min-width:0}.fpm-select{flex:0 1 180px}
+.fpm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
+.fpm-card{display:flex;flex-direction:column;gap:14px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;box-shadow:0 5px 16px rgba(15,23,42,.045)}
+.fpm-card.is-hidden{background:#f8fafc;opacity:.82}
+.fpm-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.fpm-card-title{font-size:1.12rem;font-weight:750;color:#183329;margin:0;overflow-wrap:anywhere}
+.fpm-status{font-size:.76rem;font-weight:700;padding:5px 9px;border-radius:999px;white-space:nowrap}
+.fpm-status.active{background:#dcfce7;color:#166534}.fpm-status.hidden{background:#e2e8f0;color:#475569}
+.fpm-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fpm-metric{background:#f8fafc;padding:12px;border-radius:11px;min-width:0}
+.fpm-metric small{display:block;color:#64748b;margin-bottom:4px}.fpm-metric strong{color:#172033;font-size:1.06rem;overflow-wrap:anywhere}
+.fpm-details{color:#475569;font-size:.88rem;display:grid;gap:7px}
+.fpm-actions{display:flex;gap:9px;margin-top:auto;flex-wrap:wrap}.fpm-actions .btn{border-radius:9px;min-height:40px;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.fpm-empty{padding:42px 20px;text-align:center;border:1px dashed #94a3b8;background:#f8fafc;border-radius:14px;color:#475569}
+.fpm-form{max-width:780px;margin:auto;background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:clamp(18px,3vw,30px);box-shadow:0 7px 24px rgba(15,23,42,.04)}
+.fpm-form .form-control{min-height:44px;border-radius:10px}.fpm-form .form-control:focus,.fpm-search:focus-visible,.fpm-select:focus-visible{outline:3px solid #86efac;outline-offset:1px}
+.fpm-form .btn{border-radius:10px;padding:10px 18px}
+.fpm-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:600px){.fpm-field-grid{grid-template-columns:1fr}.fpm-heading{align-items:stretch}.fpm-add{justify-content:center}.fpm-select{flex:1 1 140px}.fpm-card{padding:15px}}
