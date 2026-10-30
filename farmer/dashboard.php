@@ -45,6 +45,7 @@ $pending_requests = $stmtReqPending->get_result()->fetch_assoc()['pending_reques
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar') ? "لوحة تحكم المزارع" : "Farmer Dashboard"; ?></title>
 
     <!-- Bootstrap + Icons -->
@@ -58,9 +59,10 @@ $pending_requests = $stmtReqPending->get_result()->fetch_assoc()['pending_reques
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css?v=200">
     <?php endif; ?>
+    <link rel="stylesheet" href="../css/dashboard-v2.css?v=1">
 </head>
 
-<body data-role="farmer">
+<body data-role="farmer" class="dashboard-v2">
 
 <!-- ============ SIDEBAR ============ -->
 <?php include "../includes/farmer_sidebar.php"; ?>

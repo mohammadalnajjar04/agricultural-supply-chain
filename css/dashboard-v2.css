@@ -1,0 +1,57 @@
+/* Phase 10: dashboard visual refresh. Scoped to the three role dashboards. */
+body[data-role].dashboard-v2 {
+  --dash-bg: #f3f6f4;
+  --dash-text: #16271f;
+  --dash-border: #e1e9e4;
+  background: var(--dash-bg);
+  color: var(--dash-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+body.dashboard-v2 .main-content { min-width: 0; }
+body.dashboard-v2 .top-bar {
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--dash-border);
+  border-radius: 16px;
+  box-shadow: 0 5px 24px rgba(24,50,36,.045);
+  padding: 14px 20px;
+}
+body.dashboard-v2 .page-title { font-size: clamp(1.05rem, 1.8vw, 1.45rem); font-weight: 750; line-height: 1.35; }
+body.dashboard-v2 .sidebar { box-shadow: 5px 0 28px rgba(20,46,32,.08); }
+body.dashboard-v2 .sidebar a { border-radius: 10px; transition: background-color .15s ease, color .15s ease; }
+body.dashboard-v2 .sidebar a:focus-visible,
+body.dashboard-v2 .menu-btn:focus-visible,
+body.dashboard-v2 a:focus-visible,
+body.dashboard-v2 button:focus-visible {
+  outline: 3px solid var(--brand, #1f7a4a);
+  outline-offset: 3px;
+}
+body.dashboard-v2 .stat-card {
+  background: #fff;
+  border: 1px solid var(--dash-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(20,46,32,.05);
+  min-height: 136px;
+  height: 100%;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+body.dashboard-v2 .stat-card .number { font-variant-numeric: tabular-nums; font-weight: 800; }
+body.dashboard-v2 .stat-card h6 { color: #34483d; }
+body.dashboard-v2 .stat-icon { border-radius: 13px; }
+body.dashboard-v2 .lang-switch a { text-underline-offset: 3px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  body.dashboard-v2 .stat-card:hover { transform: translateY(-2px); box-shadow: 0 15px 34px rgba(20,46,32,.09); }
+}
+@media (max-width: 991.98px) {
+  body.dashboard-v2 .main-content { padding-inline: 14px; }
+  body.dashboard-v2 .top-bar { padding: 12px; gap: 10px; }
+  body.dashboard-v2 .page-title { font-size: 1.05rem; }
+}
+@media (max-width: 575.98px) {
+  body.dashboard-v2 .top-bar { flex-wrap: wrap; }
+  body.dashboard-v2 .top-center { min-width: 0; }
+  body.dashboard-v2 .stat-card { min-height: 112px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.dashboard-v2 .stat-card,
+  body.dashboard-v2 .sidebar a { transition: none; }
+}

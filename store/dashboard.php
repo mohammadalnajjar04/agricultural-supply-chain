@@ -56,6 +56,7 @@ $completed_orders = $stmtCompleted->get_result()->fetch_assoc()['completed_order
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar') ? "لوحة تحكم المتجر" : "Store Dashboard"; ?></title>
 
     <!-- Bootstrap + Icons -->
@@ -69,9 +70,10 @@ $completed_orders = $stmtCompleted->get_result()->fetch_assoc()['completed_order
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css?v=200">
     <?php endif; ?>
+    <link rel="stylesheet" href="../css/dashboard-v2.css?v=1">
 </head>
 
-<body data-role="store">
+<body data-role="store" class="dashboard-v2">
 
 <!-- ============ SIDEBAR ============ -->
 <?php include "../includes/store_sidebar.php"; ?>

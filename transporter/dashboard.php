@@ -54,6 +54,7 @@ $total_active = $stmtActive->get_result()->fetch_assoc()['total_active'];
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar') ? "لوحة تحكم الناقل" : "Transporter Dashboard"; ?></title>
 
     <!-- CSS + Bootstrap + Icons -->
@@ -66,9 +67,10 @@ $total_active = $stmtActive->get_result()->fetch_assoc()['total_active'];
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css?v=300">
     <?php endif; ?>
+    <link rel="stylesheet" href="../css/dashboard-v2.css?v=1">
 </head>
 
-<body data-role="transporter">
+<body data-role="transporter" class="dashboard-v2">
 
 <!-- SIDEBAR -->
 <?php include "../includes/transporter_sidebar.php"; ?>
