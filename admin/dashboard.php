@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once "../includes/auth_session.php";
+app_session_start();
 include "../includes/language.php";
 include "../config/db.php";
 
@@ -21,26 +22,39 @@ function map_role_table(string $role): array {
     }
 }
 
-if (isset($_GET['action'], $_GET['role'], $_GET['id'])) {
-    $action = strtolower(trim($_GET['action']));
-    $role = strtolower(trim($_GET['role']));
-    $id = (int)$_GET['id'];
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
-    $m = map_role_table($role);
-    if ($id > 0 && $m['table'] !== '' && in_array($action, ['approve','reject'], true)) {
-        $new_status = ($action === 'approve') ? 'approved' : 'rejected';
-        $sql = "UPDATE {$m['table']} SET status = ? WHERE {$m['id']} = ?";
-        $stmt = $GLOBALS['conn']->prepare($sql);
-        $stmt->bind_param("si", $new_status, $id);
-        if ($stmt->execute()) {
-            $msg = ($new_status === 'approved')
-                ? ($is_ar ? "تم اعتماد الحساب بنجاح." : "Account approved successfully.")
-                : ($is_ar ? "تم رفض الحساب." : "Account rejected.");
-        } else {
-            $err = $is_ar ? "حدث خطأ أثناء تحديث الحالة." : "Failed to update status.";
-        }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = (string)($_POST['csrf_token'] ?? '');
+    if (!hash_equals((string)$_SESSION['csrf_token'], $token)) {
+        $err = $is_ar ? 'انتهت صلاحية الطلب، أعد تحميل الصفحة.' : 'Invalid security token. Reload and retry.';
     } else {
-        $err = $is_ar ? "طلب غير صالح." : "Invalid request.";
+        $action = (string)($_POST['action'] ?? '');
+        $role = (string)($_POST['role'] ?? '');
+        $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $m = map_role_table($role);
+        if ($id !== false && $id !== null && $m['table'] !== '' && in_array($action, ['approve','reject'], true)) {
+            $new_status = $action === 'approve' ? 'approved' : 'rejected';
+            // Conditional update prevents repeating or reversing decisions via stale forms.
+            $sql = "UPDATE {$m['table']} SET status = ? WHERE {$m['id']} = ? AND status = 'pending'";
+            try {
+                $stmt = $conn->prepare($sql);
+                if (!$stmt) throw new RuntimeException('Unable to prepare update');
+                $stmt->bind_param('si', $new_status, $id);
+                if (!$stmt->execute()) throw new RuntimeException('Update failed');
+                $msg = $stmt->affected_rows === 1
+                    ? ($is_ar ? 'تم تحديث حالة الحساب بنجاح.' : 'Account status updated successfully.')
+                    : ($is_ar ? 'تمت معالجة الحساب مسبقاً أو لم يعد معلقاً.' : 'Account was already reviewed or is no longer pending.');
+                $stmt->close();
+            } catch (Throwable $e) {
+                error_log('Admin approval update error: ' . $e->getMessage());
+                $err = $is_ar ? 'تعذر تنفيذ الإجراء.' : 'Unable to complete the action.';
+            }
+        } else {
+            $err = $is_ar ? 'طلب غير صالح.' : 'Invalid request.';
+        }
     }
 }
 
@@ -109,6 +123,7 @@ try {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/brand.css?v=3">
+  <link rel="stylesheet" href="../css/admin-v2.css">
   <?php if ($is_ar): ?>
     <link rel="stylesheet" href="../css/style_ar.css?v=2">
   <?php endif; ?>
@@ -210,6 +225,7 @@ try {
         return;
       }
 
+      echo '<div class="mb-3"><input type="search" class="form-control admin-search" data-admin-search placeholder="' . ($is_ar ? 'ابحث بالاسم أو البريد أو المنطقة...' : 'Search name, email or location...') . '" aria-label="' . ($is_ar ? 'بحث في الحسابات' : 'Search accounts') . '"></div>';
       echo '<div class="table-clean">';
       echo '<div class="table-responsive">';
       echo '<table class="table table-hover align-middle">';
@@ -232,10 +248,17 @@ try {
           echo '<span class="text-muted">—</span>';
         }
         echo '</td>';
-        $keep = '&tab=' . urlencode($GLOBALS['tab']) . '&lang=' . urlencode($GLOBALS['lang_code']);
-        echo '<td class="d-flex gap-2 flex-wrap">';
-        echo '<a class="btn btn-sm btn-success" href="?action=approve&role=' . urlencode($role) . '&id=' . (int)$r['id'] . $keep . '"><i class="fa-solid fa-check"></i> ' . ($is_ar ? "اعتماد" : "Approve") . '</a>';
-        echo '<a class="btn btn-sm btn-outline-danger" href="?action=reject&role=' . urlencode($role) . '&id=' . (int)$r['id'] . $keep . '"><i class="fa-solid fa-xmark"></i> ' . ($is_ar ? "رفض" : "Reject") . '</a>';
+        echo '<td class="admin-actions">';
+        foreach (['approve', 'reject'] as $decision) {
+          $class = $decision === 'approve' ? 'btn-success' : 'btn-outline-danger';
+          $label = $decision === 'approve' ? ($is_ar ? 'اعتماد' : 'Approve') : ($is_ar ? 'رفض' : 'Reject');
+          echo '<form method="post" class="d-inline-block me-1" data-admin-approval-form>';
+          echo '<input type="hidden" name="csrf_token" value="' . htmlspecialchars((string)$_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') . '">';
+          echo '<input type="hidden" name="role" value="' . htmlspecialchars($role, ENT_QUOTES, 'UTF-8') . '">';
+          echo '<input type="hidden" name="id" value="' . (int)$r['id'] . '">';
+          echo '<button type="submit" name="action" value="' . $decision . '" class="btn btn-sm ' . $class . '">' . $label . '</button>';
+          echo '</form>';
+        }
         echo '</td>';
         echo '</tr>';
       }
@@ -256,5 +279,6 @@ try {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/brand.js?v=3"></script>
+<script src="../js/admin-v2.js" defer></script>
 </body>
 </html>
