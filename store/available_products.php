@@ -46,10 +46,12 @@ $products = $stmt->get_result();
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/brand.css?v=2">
 <link rel="stylesheet" href="../css/farmer.css?v=200">
+    <link rel="stylesheet" href="../css/store-catalog-v2.css?v=1">
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css">
     <?php endif; ?>
@@ -76,13 +78,27 @@ $products = $stmt->get_result();
         <?= ($lang_code === 'ar') ? "المنتجات المتاحة" : "Available Products"; ?>
     </h3>
 
+    <section class="catalog-toolbar" aria-label="<?= ($lang_code === 'ar') ? 'البحث والتصفية' : 'Search and filter' ?>">
+      <label for="catalog-search" class="form-label mb-1"><?= ($lang_code === 'ar') ? 'ابحث عن محصول أو مزارع أو منطقة' : 'Search crops, farmers or locations' ?></label>
+      <input id="catalog-search" type="search" class="form-control" autocomplete="off" placeholder="<?= ($lang_code === 'ar') ? 'مثلاً: طماطم، إربد...' : 'E.g. tomatoes, Irbid...' ?>">
+      <div class="catalog-toolbar-bottom">
+        <label for="catalog-sort"><?= ($lang_code === 'ar') ? 'ترتيب حسب' : 'Sort by' ?></label>
+        <select id="catalog-sort" class="form-select" aria-label="<?= ($lang_code === 'ar') ? 'ترتيب المنتجات' : 'Sort products' ?>">
+          <option value="newest"><?= ($lang_code === 'ar') ? 'الأحدث' : 'Newest' ?></option>
+          <option value="price-asc"><?= ($lang_code === 'ar') ? 'السعر: الأقل أولاً' : 'Price: low to high' ?></option>
+          <option value="price-desc"><?= ($lang_code === 'ar') ? 'السعر: الأعلى أولاً' : 'Price: high to low' ?></option>
+        </select>
+        <output id="catalog-count" aria-live="polite"></output>
+      </div>
+    </section>
+    <p class="alert alert-info" id="catalog-no-results" hidden><?= ($lang_code === 'ar') ? 'لا توجد منتجات تطابق البحث.' : 'No products match your search.' ?></p>
     <!-- PRODUCT CARDS -->
-    <div class="row g-4">
+    <div class="row g-4" id="catalog-products">
 
         <?php if ($products->num_rows > 0): ?>
 
             <?php while($row = $products->fetch_assoc()): ?>
-                <div class="col-md-4">
+                <div class="col-md-4 catalog-item" data-id="<?= (int)$row['product_id'] ?>" data-price="<?= htmlspecialchars((string)$row['price'], ENT_QUOTES, 'UTF-8') ?>" data-search="<?= htmlspecialchars(mb_strtolower((string)($row['product_name'].' '.$row['farmer_name'].' '.$row['location']), 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>">
                     <div class="product-card">
 
                         <!-- PRODUCT TITLE -->
@@ -173,6 +189,6 @@ $products = $stmt->get_result();
     </div>
 
 </div>
-
+<script src="../js/store-catalog-v2.js?v=1" defer></script>
 </body>
 </html>

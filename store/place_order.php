@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="<?= $lang_code ?>" dir="<?= ($lang_code === 'ar') ? 'rtl' : 'ltr' ?>">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar') ? "تأكيد الطلب" : "Place Order"; ?></title>
 
     <!-- Bootstrap + Icons -->
@@ -96,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/brand.css?v=2">
 <link rel="stylesheet" href="../css/farmer.css">
+    <link rel="stylesheet" href="../css/store-catalog-v2.css?v=1">
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css">
     <?php endif; ?>
@@ -121,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="product-card">
+            <div class="product-card order-checkout">
 
                 <?php if (!empty($error_msg)): ?>
                     <div class="alert alert-danger"><?= $error_msg; ?></div>
@@ -151,6 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </a>
                     </div>
                 <?php else: ?>
+                    <div class="order-price-note">
+                      <?= ($lang_code === 'ar') ? 'الإجمالي أدناه تقديري للمنتجات فقط؛ تكلفة النقل تُحسب عند قبول المزارع للطلب.' : 'The estimate covers products only. Delivery is calculated when the farmer approves the order.' ?>
+                    </div>
                     <form method="POST" class="mt-3">
                         <?= csrf_field(); ?>
                         <div class="mb-3">
@@ -160,6 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input
                                 type="number"
                                 name="quantity"
+                                id="order-quantity"
+                                data-unit-price="<?= htmlspecialchars((string)$product['price'], ENT_QUOTES, 'UTF-8') ?>"
                                 class="form-control"
                                 min="1"
                                 max="<?= (int)$product['quantity']; ?>"
@@ -171,6 +178,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </small>
                         </div>
 
+                        <div class="order-estimate" aria-live="polite">
+                          <span><?= ($lang_code === 'ar') ? 'إجمالي المنتجات التقريبي' : 'Estimated product subtotal' ?></span>
+                          <strong><output id="order-estimated-subtotal">—</output> JOD</strong>
+                        </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-success">
                                 <i class="fa-solid fa-check"></i>
@@ -191,5 +202,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </div>
 
+<script>
+(() => {
+  const input = document.getElementById('order-quantity');
+  const output = document.getElementById('order-estimated-subtotal');
+  if (!input || !output) return;
+  const price = Number(input.dataset.unitPrice);
+  const update = () => {
+    const quantity = Number(input.value);
+    output.textContent = Number.isInteger(quantity) && quantity > 0 && quantity <= Number(input.max) && Number.isFinite(price)
+      ? (quantity * price).toFixed(2) : '—';
+  };
+  input.addEventListener('input', update);
+  update();
+})();
+</script>
 </body>
 </html>
