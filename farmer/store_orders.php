@@ -83,6 +83,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
                             $conn->rollback();
                             $err = $is_ar ? "تعذر خصم الكمية. حاول مرة أخرى." : "Failed to deduct stock.";
                         } else {
+                            // Persist the stock movement within the same transaction as approval.
+                            // A unique (order_id, movement_type) key protects against duplicate deductions.
+                            $stmtMovement = $conn->prepare("INSERT INTO inventory_movements
+                                (product_id, order_id, movement_type, quantity_change, stock_before, stock_after, actor_farmer_id)
+                                VALUES (?, ?, 'order_approved', ?, ?, ?, ?)");
+                            $stockAfter = $stock - $reqQty;
+                            $negativeQty = -$reqQty;
+                            $stmtMovement->bind_param('iiiiii', $o['product_id'], $order_id, $negativeQty, $stock, $stockAfter, $farmer_id);
+                            $stmtMovement->execute();
+
                             // Calculate delivery pricing (fair model)
                             $pricing = calculate_delivery_pricing((string)$o['farmer_location'], (string)$o['store_location'], (float)$reqQty, 0.03);
 

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inTransaction = true;
             // Lock product so availability and price come from the database,
             // not from the stale page load or client input.
-            $lock = $conn->prepare('SELECT quantity, price FROM products WHERE product_id = ? AND is_active = 1 FOR UPDATE');
+            $lock = $conn->prepare('SELECT name, quantity, price FROM products WHERE product_id = ? AND is_active = 1 FOR UPDATE');
             $lock->bind_param('i', $product_id);
             $lock->execute();
             $current = $lock->get_result()->fetch_assoc();
@@ -62,8 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error_msg = ($lang_code === 'ar') ? 'الكمية المطلوبة غير متوفرة حالياً' : 'Requested quantity is not currently available';
             } else {
                 $total_price = round((float)$current['price'] * $quantity, 2);
-                $stmtOrder = $conn->prepare("INSERT INTO orders (store_id, product_id, quantity, order_date, total_price, status) VALUES (?, ?, ?, CURDATE(), ?, 'pending')");
-                $stmtOrder->bind_param('iiid', $store_id, $product_id, $quantity, $total_price);
+                $stmtOrder = $conn->prepare("INSERT INTO orders (store_id, product_id, quantity, order_date, total_price, status, product_name_at_order, unit_price_at_order) VALUES (?, ?, ?, CURDATE(), ?, 'pending', ?, ?)");
+                $unitPrice = (string)$current['price'];
+                $productName = (string)$current['name'];
+                $stmtOrder->bind_param('iiidsd', $store_id, $product_id, $quantity, $total_price, $productName, $unitPrice);
                 $stmtOrder->execute();
                 $conn->commit();
                 $inTransaction = false;
