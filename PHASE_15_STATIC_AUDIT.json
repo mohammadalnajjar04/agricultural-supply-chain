@@ -1,0 +1,40 @@
+{
+  "base": "security-pass ZIP (not latest GitHub branch)",
+  "method": "diagnostic overlay of phase 2-14 packages by phase number, NOT a deployable merge",
+  "phase_file_collisions": {
+    "store/place_order.php": [
+      2,
+      5,
+      6,
+      11
+    ],
+    "farmer/store_orders.php": [
+      3,
+      6
+    ],
+    "farmer/add_product.php": [
+      5,
+      12
+    ],
+    "farmer/edit_product.php": [
+      5,
+      12
+    ],
+    "farmer/my_products.php": [
+      5,
+      12
+    ],
+    "store/available_products.php": [
+      5,
+      11
+    ],
+    "api/v1/_bootstrap.php": [
+      8,
+      9
+    ]
+  },
+  "php_files_linted": 54,
+  "php_syntax_errors": [],
+  "live_mysql_tested": false,
+  "browser_tested": false
+}
