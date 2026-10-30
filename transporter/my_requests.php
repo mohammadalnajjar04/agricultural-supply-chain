@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
@@ -134,15 +135,23 @@ $requests = $stmt->get_result();
                         </p>
 
                         <?php if ($status === 'accepted'): ?>
-                            <a class="btn btn-outline-primary w-100" href="update_request_status.php?id=<?= (int)$row['request_id']; ?>&action=start">
+                            <form method="post" action="update_request_status.php">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                                <input type="hidden" name="action" value="start">
+                                <button type="submit" class="btn btn-outline-primary w-100">
                                 <i class="fa-solid fa-play"></i>
                                 <?= ($lang_code === 'ar') ? "بدء التوصيل" : "Start Delivery"; ?>
-                            </a>
+                            </button></form>
                         <?php elseif ($status === 'in_progress'): ?>
-                            <a class="btn btn-success w-100" href="update_request_status.php?id=<?= (int)$row['request_id']; ?>&action=deliver">
+                            <form method="post" action="update_request_status.php">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                                <input type="hidden" name="action" value="deliver">
+                                <button type="submit" class="btn btn-success w-100">
                                 <i class="fa-solid fa-circle-check"></i>
                                 <?= ($lang_code === 'ar') ? "تم التسليم" : "Mark Delivered"; ?>
-                            </a>
+                            </button></form>
                         <?php endif; ?>
 
                     </div>

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
@@ -94,12 +95,13 @@ $products = $stmt->get_result();
                                 <?=($lang_code=='ar'?'تعديل':'Edit');?>
                             </a>
 
-                            <a href="delete_product.php?id=<?= $p['product_id']; ?>"
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('<?=($lang_code=='ar'?'هل أنت متأكد أنك تريد الحذف؟':'Are you sure to delete?');?>')">
+                            <form method="post" action="delete_product.php" class="d-inline" onsubmit="return confirm('<?=($lang_code=='ar'?'هل أنت متأكد أنك تريد الحذف؟':'Are you sure to delete?');?>')">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= (int)$p['product_id'] ?>">
+                                <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="fa-solid fa-trash"></i>
                                 <?=($lang_code=='ar'?'حذف':'Delete');?>
-                            </a>
+                                </button></form>
 
                         </div>
 

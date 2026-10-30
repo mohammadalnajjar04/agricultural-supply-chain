@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $admin = $stmt->get_result()->fetch_assoc();
 
             if ($admin && password_verify($password, $admin['password'])) {
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = (int)$admin['admin_id'];
                 $_SESSION['role'] = 'admin';
                 $_SESSION['name'] = $admin['name'];
@@ -68,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ? "حسابك قيد المراجعة حاليًا. سيتم تفعيله بعد التحقق من المعلومات." 
                         : "Your account is pending review. You can sign in once it is approved.";
                 } else {
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = (int)$user['id'];
                     $_SESSION['role'] = $role_post;
                     $_SESSION['name'] = $user['name'];

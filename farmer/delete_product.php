@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 
 // حماية الصفحة — فقط للمزارع
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "farmer") {
@@ -9,13 +10,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "farmer") {
     exit;
 }
 
+require_valid_csrf();
+
 // يجب أن يحتوي الرابط على ID المنتج
-if (!isset($_GET['id'])) {
+if (!isset($_POST['id'])) {
     header("Location: my_products.php");
     exit;
 }
 
-$product_id = intval($_GET['id']);
+$product_id = intval($_POST['id']);
 $farmer_id = $_SESSION['user_id'];
 
 // حذف المنتج مع التحقق أنه يخص نفس المزارع

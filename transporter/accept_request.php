@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../config/db.php";
+require_once "../includes/security.php";
 
 // حماية الصفحة – فقط الناقل
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "transporter") {
@@ -10,13 +11,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "transporter") {
 
 $transporter_id = $_SESSION['user_id'];
 
+require_valid_csrf();
+
 // التحقق من وجود رقم الطلب
-if (!isset($_GET['id'])) {
+if (!isset($_POST['id'])) {
     header("Location: available_requests.php");
     exit;
 }
 
-$request_id = intval($_GET['id']);
+$request_id = intval($_POST['id']);
 
 // قبول الطلب: تعيين transporter_id وتغيير الحالة إلى accepted
 // (وإن كان الطلب مرتبط بأوردر، نحدّث حالة الأوردر إلى in_progress)
@@ -30,6 +33,12 @@ try {
     ");
     $stmt->bind_param("ii", $transporter_id, $request_id);
     $stmt->execute();
+
+    if ($stmt->affected_rows !== 1) {
+        $conn->rollback();
+        header('Location: available_requests.php?err=already_taken');
+        exit;
+    }
 
     // update order if linked
     $stmt2 = $conn->prepare("SELECT order_id FROM transport_requests WHERE request_id = ? LIMIT 1");

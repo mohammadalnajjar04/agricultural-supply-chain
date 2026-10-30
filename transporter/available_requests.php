@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
@@ -141,11 +142,13 @@ $requests = $stmt->get_result();
                         </p>
 
                         <div class="mt-3 text-end">
-                            <a href="accept_request.php?id=<?= (int)$row['request_id']; ?>"
-                               class="btn btn-success btn-sm">
+                            <form method="post" action="accept_request.php">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                                <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fa-solid fa-check"></i>
                                 <?= ($lang_code === 'ar' ? "قبول الطلب" : "Accept Request"); ?>
-                            </a>
+                                </button></form>
                         </div>
 
                     </div>

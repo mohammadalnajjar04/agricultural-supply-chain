@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
@@ -363,9 +364,12 @@ foreach (array_slice($recs, 0, 6) as $r) {
                                 </div>
 
                                 <div class="mt-3 d-grid">
-                                    <a class="btn btn-success" href="accept_request.php?id=<?= (int)($r['request_id'] ?? 0) ?>">
+                                    <form method="post" action="accept_request.php">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="id" value="<?= (int)($r['request_id'] ?? 0) ?>">
+                                        <button type="submit" class="btn btn-success">
                                         <i class="fa fa-check"></i> <?= ($lang_code === 'ar') ? "اقبل الطلب" : "Accept Request" ?>
-                                    </a>
+                                        </button></form>
                                 </div>
 
                             </div>

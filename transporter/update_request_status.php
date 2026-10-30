@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'transporter') {
     header("Location: ../auth/login.php");
@@ -9,14 +10,15 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'transporter')
 }
 
 $transporter_id = (int)$_SESSION['user_id'];
+require_valid_csrf();
 
-if (!isset($_GET['id'], $_GET['action'])) {
+if (!isset($_POST['id'], $_POST['action'])) {
     header("Location: my_requests.php");
     exit;
 }
 
-$request_id = (int)$_GET['id'];
-$action = $_GET['action'];
+$request_id = (int)$_POST['id'];
+$action = $_POST['action'];
 
 // Get current status + related store/product
 $stmt = $conn->prepare("SELECT request_id, status, store_id, product_id, order_id FROM transport_requests WHERE request_id = ? AND transporter_id = ? LIMIT 1");

@@ -1,0 +1,39 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Python
+ai_service/__pycache__/
+ai_service/*.pyc
+ai_service/.venv/
+ai_service/venv/
+
+# Logs
+logs/*.log
+
+# Uploads (user content)
+uploads/verification/*
+!uploads/verification/.htaccess
+!uploads/verification/index.php
+
+# Rate limit temp files
+/tmp/agri_ratelimit/
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/

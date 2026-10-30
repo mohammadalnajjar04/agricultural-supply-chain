@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 include "../includes/pricing.php";
 
 // Farmer guard
@@ -18,9 +19,10 @@ $msg = '';
 $err = '';
 
 // Handle approve/reject
-if (isset($_GET['action'], $_GET['order_id'])) {
-    $action = strtolower(trim((string)$_GET['action']));
-    $order_id = (int)$_GET['order_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['order_id'])) {
+    require_valid_csrf();
+    $action = strtolower(trim((string)$_POST['action']));
+    $order_id = (int)$_POST['order_id'];
 
     if ($order_id > 0 && in_array($action, ['approve','reject'], true)) {
         try {
@@ -228,12 +230,20 @@ $orders = $stmt->get_result();
 
                         <?php if ($st === 'pending'): ?>
                             <div class="d-flex gap-2 mt-3">
-                                <a class="btn btn-success btn-sm w-50" href="?action=approve&order_id=<?= (int)$o['order_id'] ?>">
+                                <form method="post" class="d-inline">
+<?= csrf_field() ?>
+<input type="hidden" name="action" value="approve">
+<input type="hidden" name="order_id" value="<?= (int)$o['order_id'] ?>">
+<button type="submit" class="btn btn-success btn-sm w-50">
                                     <i class="fa-solid fa-check"></i> <?= $is_ar ? "قبول" : "Approve" ?>
-                                </a>
-                                <a class="btn btn-outline-danger btn-sm w-50" href="?action=reject&order_id=<?= (int)$o['order_id'] ?>" onclick="return confirm('<?= $is_ar ? "هل أنت متأكد من رفض الطلب؟" : "Reject this order?" ?>')">
+                                </button></form>
+                                <form method="post" class="d-inline">
+<?= csrf_field() ?>
+<input type="hidden" name="action" value="reject">
+<input type="hidden" name="order_id" value="<?= (int)$o['order_id'] ?>">
+<button type="submit" class="btn btn-outline-danger btn-sm w-50" onclick="return confirm('<?= $is_ar ? "هل أنت متأكد من رفض الطلب؟" : "Reject this order?" ?>')">
                                     <i class="fa-solid fa-xmark"></i> <?= $is_ar ? "رفض" : "Reject" ?>
-                                </a>
+                                </button></form>
                             </div>
                         <?php endif; ?>
                     </div>
