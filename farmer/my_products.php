@@ -21,7 +21,7 @@ $farmer = $stmtF->get_result()->fetch_assoc();
 $farm_location = $farmer['location']; // ⭐ نفس الموقع لجميع المنتجات
 
 // جلب المنتجات الخاصة بالمزارع
-$stmt = $conn->prepare("SELECT * FROM products WHERE farmer_id = ? ORDER BY product_id DESC");
+$stmt = $conn->prepare("SELECT * FROM products WHERE farmer_id = ? ORDER BY is_active DESC, product_id DESC");
 $stmt->bind_param("i", $farmer_id);
 $stmt->execute();
 $products = $stmt->get_result();
@@ -74,6 +74,7 @@ $products = $stmt->get_result();
                 <div class="col-md-4 mb-4">
 
                     <div class="product-card shadow-sm p-3 bg-white rounded">
+                        <?php if (!(int)$p['is_active']): ?><span class="badge bg-secondary mb-2"><?= $lang_code === 'ar' ? 'غير معروض' : 'Hidden' ?></span><?php endif; ?>
 
                         <h5 class="product-title">
                             <i class="fa-solid fa-leaf text-success"></i>
@@ -98,9 +99,9 @@ $products = $stmt->get_result();
                             <form method="post" action="delete_product.php" class="d-inline" onsubmit="return confirm('<?=($lang_code=='ar'?'هل أنت متأكد أنك تريد الحذف؟':'Are you sure to delete?');?>')">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="id" value="<?= (int)$p['product_id'] ?>">
-                                <button type="submit" class="btn btn-danger btn-sm">
+                                <button type="submit" class="btn btn-danger btn-sm" <?= !(int)$p['is_active'] ? 'disabled' : '' ?>>
                                 <i class="fa-solid fa-trash"></i>
-                                <?=($lang_code=='ar'?'حذف':'Delete');?>
+                                <?=($lang_code=='ar'?'إخفاء':'Hide');?>
                                 </button></form>
 
                         </div>

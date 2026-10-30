@@ -27,6 +27,7 @@ $stmt = $conn->prepare("
     FROM products p
     JOIN farmers f ON p.farmer_id = f.farmer_id
     LEFT JOIN orders o ON o.product_id = p.product_id AND o.rating IS NOT NULL
+    WHERE p.is_active = 1 AND p.quantity > 0
     GROUP BY p.product_id, p.name, p.quantity, p.price, p.harvest_date, f.name, f.location
     ORDER BY p.product_id DESC
 ");

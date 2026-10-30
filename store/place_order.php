@@ -25,7 +25,7 @@ $stmt = $conn->prepare("
     SELECT p.product_id, p.name, p.price, p.quantity, f.name AS farmer_name, f.location
     FROM products p
     JOIN farmers f ON p.farmer_id = f.farmer_id
-    WHERE p.product_id = ?
+    WHERE p.product_id = ? AND p.is_active = 1 AND p.quantity > 0
 ");
 $stmt->bind_param("i", $product_id);
 $stmt->execute();
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inTransaction = true;
             // Lock product so availability and price come from the database,
             // not from the stale page load or client input.
-            $lock = $conn->prepare('SELECT quantity, price FROM products WHERE product_id = ? FOR UPDATE');
+            $lock = $conn->prepare('SELECT quantity, price FROM products WHERE product_id = ? AND is_active = 1 FOR UPDATE');
             $lock->bind_param('i', $product_id);
             $lock->execute();
             $current = $lock->get_result()->fetch_assoc();

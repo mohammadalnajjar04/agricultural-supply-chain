@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 
 // حماية الصفحة
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
@@ -27,7 +28,7 @@ $farmer = $stmtFarmer->get_result()->fetch_assoc();
 $farm_location = $farmer['location']; // 🔹 نفس الموقع لجميع المنتجات
 
 // جلب بيانات المنتج
-$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ? AND farmer_id = ?");
+$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ? AND farmer_id = ? AND is_active = 1");
 $stmt->bind_param("ii", $product_id, $farmer_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -42,6 +43,7 @@ $product = $result->fetch_assoc();
 // عند حفظ التعديلات
 $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_valid_csrf();
 
     $name         = trim($_POST['name']);
     $quantity     = intval($_POST['quantity']);
@@ -54,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update = $conn->prepare("
             UPDATE products 
             SET name = ?, quantity = ?, price = ?, harvest_date = ?, location = ?
-            WHERE product_id = ? AND farmer_id = ?
+            WHERE product_id = ? AND farmer_id = ? AND is_active = 1
         ");
 
         $update->bind_param(
@@ -132,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?= $message; ?>
 
         <form method="POST">
+            <?= csrf_field() ?>
 
             <!-- Product Name -->
             <div class="mb-3">

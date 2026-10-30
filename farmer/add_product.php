@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 
 // حماية الصفحة
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
@@ -23,6 +24,7 @@ $farm_location = $farmer['location'];   // سيتم استخدامه لكل ال
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_valid_csrf();
 
     $name         = trim($_POST['name']);
     $quantity     = trim($_POST['quantity']);
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // الموقع يأتي من الحقل المخفي وليس من المستخدم
     $location     = $farm_location;
 
-    if (!empty($name) && !empty($quantity) && !empty($price)) {
+    if ($name !== '' && filter_var($quantity, FILTER_VALIDATE_INT, ['options'=>['min_range'=>1]]) !== false && is_numeric($price) && (float)$price >= 0) {
 
         $stmt = $conn->prepare("
             INSERT INTO products (name, quantity, price, harvest_date, location, farmer_id)
@@ -108,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?= $message ?>
 
         <form method="POST">
+            <?= csrf_field() ?>
 
             <!-- Product Name -->
             <div class="mb-3">
