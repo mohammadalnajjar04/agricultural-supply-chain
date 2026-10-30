@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once "../includes/auth_session.php";
+app_session_start();
 include "../includes/language.php";
 include "../config/db.php";
 
@@ -44,10 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $admin = $stmt->get_result()->fetch_assoc();
 
             if ($admin && password_verify($password, $admin['password'])) {
-                session_regenerate_id(true);
-                $_SESSION['user_id'] = (int)$admin['admin_id'];
-                $_SESSION['role'] = 'admin';
-                $_SESSION['name'] = $admin['name'];
+                app_login((int)$admin['admin_id'], 'admin', (string)$admin['name']);
                 header('Location: ' . redirect_by_role('admin'));
                 exit;
             }
@@ -69,10 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ? "حسابك قيد المراجعة حاليًا. سيتم تفعيله بعد التحقق من المعلومات." 
                         : "Your account is pending review. You can sign in once it is approved.";
                 } else {
-                    session_regenerate_id(true);
-                    $_SESSION['user_id'] = (int)$user['id'];
-                    $_SESSION['role'] = $role_post;
-                    $_SESSION['name'] = $user['name'];
+                    app_login((int)$user['id'], $role_post, (string)$user['name']);
                     header('Location: ' . redirect_by_role($role_post));
                     exit;
                 }

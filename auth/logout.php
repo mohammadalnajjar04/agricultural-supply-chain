@@ -1,13 +1,5 @@
 <?php
-session_start();
-
-// حذف جميع بيانات الجلسة
-session_unset();
-
-// إنهاء الجلسة تمامًا
-session_destroy();
-
-// إعادة التوجيه لصفحة تسجيل الدخول
-header("Location: login.php");
+require_once __DIR__ . '/../includes/auth_session.php';
+app_logout();
+header('Location: login.php', true, 303);
 exit;
-?>

@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 // Shared JSON API bootstrap. No output before headers.
 ini_set('display_errors', '0');
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__, 2) . '/includes/auth_session.php';
+app_session_start();
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
@@ -27,13 +26,12 @@ function api_require_method(string $expected): void
 
 function api_require_role(array $allowed): int
 {
-    $id = $_SESSION['user_id'] ?? null;
-    $role = $_SESSION['role'] ?? null;
-    if (!is_numeric($id) || (int)$id <= 0 || !is_string($role)) {
+    $user = app_current_user();
+    if ($user === null) {
         api_response(401, ['success' => false, 'error' => ['code' => 'UNAUTHENTICATED', 'message' => 'Authentication required']]);
     }
-    if (!in_array($role, $allowed, true)) {
+    if (!in_array($user['role'], $allowed, true)) {
         api_response(403, ['success' => false, 'error' => ['code' => 'FORBIDDEN', 'message' => 'Insufficient permissions']]);
     }
-    return (int)$id;
+    return $user['id'];
 }
