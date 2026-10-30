@@ -1,39 +1,18 @@
-# Dependencies
-/vendor/
-composer.lock
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment
+# Runtime secrets and generated content
 .env
-.env.local
-
-# Python
-ai_service/__pycache__/
-ai_service/*.pyc
-ai_service/.venv/
-ai_service/venv/
-
-# Logs
-logs/*.log
-
-# Uploads (user content)
+.env.*
+!.env.example
+*.log
+logs/*
+!logs/.htaccess
 uploads/verification/*
 !uploads/verification/.htaccess
 !uploads/verification/index.php
-
-# Rate limit temp files
-/tmp/agri_ratelimit/
-
-# PHPUnit
-.phpunit.result.cache
-.phpunit.cache/
+!uploads/verification/.gitkeep
+ai_service/__pycache__/
+__pycache__/
+*.pyc
+.venv/
+vendor/
+.idea/
+.vscode/

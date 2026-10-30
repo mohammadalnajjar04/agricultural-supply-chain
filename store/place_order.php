@@ -2,6 +2,7 @@
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once "../includes/security.php";
 // NOTE: Delivery pricing is calculated when the farmer approves the order.
 
 // حماية المتجر
@@ -35,46 +36,48 @@ if (!$product) {
     die("Product not found.");
 }
 
-// عند تأكيد الطلب
+// Create a pending order. Approval deducts stock, not order submission.
+// Product availability is rechecked inside the transaction to avoid stale data.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
-    if ($quantity <= 0) {
-        $error_msg = ($lang_code === 'ar') ? "يرجى إدخال كمية صحيحة" : "Please enter a valid quantity";
-    } elseif ($quantity > (int)$product['quantity']) {
-        $error_msg = ($lang_code === 'ar') ? "الكمية المطلوبة غير متوفرة" : "Requested quantity is not available";
+    require_valid_csrf();
+    $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1]
+    ]);
+    if ($quantity === false || $quantity === null) {
+        $error_msg = ($lang_code === 'ar') ? 'يرجى إدخال كمية صحيحة' : 'Please enter a valid quantity';
     } else {
-
-        // total price = unit price * quantity
-        $total_price = (float)$product['price'] * $quantity;
-
+        $inTransaction = false;
         try {
             $conn->begin_transaction();
-
-            // Create order ONLY. Stock deduction + transport request happen after farmer approval.
-            $stmtOrder = $conn->prepare("
-                INSERT INTO orders (store_id, product_id, quantity, order_date, total_price, status)
-                VALUES (?, ?, ?, CURDATE(), ?, 'pending')
-            ");
-            $stmtOrder->bind_param("iiid", $store_id, $product_id, $quantity, $total_price);
-
-            if (!$stmtOrder->execute()) {
+            $inTransaction = true;
+            // Lock product so availability and price come from the database,
+            // not from the stale page load or client input.
+            $lock = $conn->prepare('SELECT quantity, price FROM products WHERE product_id = ? FOR UPDATE');
+            $lock->bind_param('i', $product_id);
+            $lock->execute();
+            $current = $lock->get_result()->fetch_assoc();
+            if (!$current || (int)$current['quantity'] < $quantity) {
                 $conn->rollback();
-                $error_msg = ($lang_code === 'ar') ? "حدث خطأ أثناء إنشاء الطلب" : "Error placing order";
+                $inTransaction = false;
+                $error_msg = ($lang_code === 'ar') ? 'الكمية المطلوبة غير متوفرة حالياً' : 'Requested quantity is not currently available';
             } else {
+                $total_price = round((float)$current['price'] * $quantity, 2);
+                $stmtOrder = $conn->prepare("INSERT INTO orders (store_id, product_id, quantity, order_date, total_price, status) VALUES (?, ?, ?, CURDATE(), ?, 'pending')");
+                $stmtOrder->bind_param('iiid', $store_id, $product_id, $quantity, $total_price);
+                $stmtOrder->execute();
                 $conn->commit();
-                header("Location: my_orders.php?msg=placed");
+                $inTransaction = false;
+                header('Location: my_orders.php?msg=placed');
                 exit;
             }
         } catch (Throwable $e) {
-            // In case begin_transaction or other DB errors
-            if ($conn->errno) {
-                $conn->rollback();
-            }
-            $error_msg = ($lang_code === 'ar') ? "خطأ غير متوقع" : "Unexpected error";
+            if ($inTransaction) { $conn->rollback(); }
+            error_log('Order placement failed: ' . $e->getMessage());
+            $error_msg = ($lang_code === 'ar') ? 'حدث خطأ أثناء إنشاء الطلب' : 'Could not create order';
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $lang_code ?>" dir="<?= ($lang_code === 'ar') ? 'rtl' : 'ltr' ?>">
@@ -90,8 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/brand.css?v=2">
-<link rel="stylesheet" href="../css/brand.css?v=2">
-<link rel="stylesheet" href="../css/brand.css?v=2">
 <link rel="stylesheet" href="../css/farmer.css">
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css">
@@ -149,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php else: ?>
                     <form method="POST" class="mt-3">
+                        <?= csrf_field(); ?>
                         <div class="mb-3">
                             <label class="form-label">
                                 <?= ($lang_code === 'ar') ? "الكمية المطلوبة" : "Quantity"; ?>
