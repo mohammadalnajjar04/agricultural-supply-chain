@@ -17,6 +17,7 @@ $is_ar = ($lang_code === 'ar');
 
 $msg = '';
 $err = '';
+$transactionStarted = false;
 
 // Handle approve/reject
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['order_id'])) {
@@ -27,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
     if ($order_id > 0 && in_array($action, ['approve','reject'], true)) {
         try {
             $conn->begin_transaction();
+            $transactionStarted = true;
 
             // Lock order row for this farmer
             $stmtO = $conn->prepare("
@@ -47,17 +49,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
 
             if (!$o) {
                 $conn->rollback();
+                $transactionStarted = false;
                 $err = $is_ar ? "الطلب غير موجود." : "Order not found.";
             } else {
                 $st = strtolower((string)($o['status'] ?? ''));
                 if ($st !== 'pending') {
                     $conn->rollback();
+                $transactionStarted = false;
                     $err = $is_ar ? "لا يمكن تعديل هذا الطلب لأنه ليس (Pending)." : "This order is not pending.";
                 } elseif ($action === 'reject') {
-                    $stmtU = $conn->prepare("UPDATE orders SET status='rejected' WHERE order_id=?");
+                    $stmtU = $conn->prepare("UPDATE orders SET status='rejected' WHERE order_id=? AND status='pending'");
                     $stmtU->bind_param("i", $order_id);
                     $stmtU->execute();
+                    if ($stmtU->affected_rows !== 1) {
+                        throw new RuntimeException('Order state changed before rejection');
+                    }
                     $conn->commit();
+                    $transactionStarted = false;
                     $msg = $is_ar ? "تم رفض الطلب." : "Order rejected.";
                 } else {
                     // Approve: ensure stock available
@@ -82,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
             $stmtU = $conn->prepare("
                                 UPDATE orders
                                 SET status='approved', delivery_fee=?, platform_fee=?, driver_earning=?
-                                WHERE order_id=?
+                                WHERE order_id=? AND status='pending'
                             ");
                             $stmtU->bind_param(
                                 "dddi",
@@ -92,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
                                 $order_id
                             );
                             $stmtU->execute();
+                            if ($stmtU->affected_rows !== 1) {
+                                throw new RuntimeException('Order state changed before approval');
+                            }
 
                             // Create transport request linked to order
                             $stmtTR = $conn->prepare("
@@ -119,14 +130,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
                             $stmtTR->execute();
 
                             $conn->commit();
+                            $transactionStarted = false;
                             $msg = $is_ar ? "تم قبول الطلب وإنشاء طلب نقل تلقائياً. (أجرة التوصيل على المتجر)" : "Order approved and transport request created. (Delivery fee is paid by the store)";
                         }
                     }
                 }
             }
         } catch (Throwable $e) {
-            if ($conn->errno) {
-                $conn->rollback();
+            if ($transactionStarted) {
+                try { $conn->rollback(); } catch (Throwable $ignored) {}
+                $transactionStarted = false;
             }
             $err = $is_ar ? "حدث خطأ غير متوقع." : "Unexpected error.";
         }
@@ -230,18 +243,18 @@ $orders = $stmt->get_result();
 
                         <?php if ($st === 'pending'): ?>
                             <div class="d-flex gap-2 mt-3">
-                                <form method="post" class="d-inline">
+                                <form method="post" class="flex-fill">
 <?= csrf_field() ?>
 <input type="hidden" name="action" value="approve">
 <input type="hidden" name="order_id" value="<?= (int)$o['order_id'] ?>">
-<button type="submit" class="btn btn-success btn-sm w-50">
+<button type="submit" class="btn btn-success btn-sm w-100">
                                     <i class="fa-solid fa-check"></i> <?= $is_ar ? "قبول" : "Approve" ?>
                                 </button></form>
-                                <form method="post" class="d-inline">
+                                <form method="post" class="flex-fill">
 <?= csrf_field() ?>
 <input type="hidden" name="action" value="reject">
 <input type="hidden" name="order_id" value="<?= (int)$o['order_id'] ?>">
-<button type="submit" class="btn btn-outline-danger btn-sm w-50" onclick="return confirm('<?= $is_ar ? "هل أنت متأكد من رفض الطلب؟" : "Reject this order?" ?>')">
+<button type="submit" class="btn btn-outline-danger btn-sm w-100" onclick="return confirm('<?= $is_ar ? "هل أنت متأكد من رفض الطلب؟" : "Reject this order?" ?>')">
                                     <i class="fa-solid fa-xmark"></i> <?= $is_ar ? "رفض" : "Reject" ?>
                                 </button></form>
                             </div>
