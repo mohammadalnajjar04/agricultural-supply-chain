@@ -1,0 +1,11 @@
+/* Phase 13: Transport request listing; scoped to avoid other dashboard styles. */
+body[data-role="transporter"] .transport-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+body[data-role="transporter"] .transport-tools .form-control{max-width:420px;min-width:220px;flex:1}
+body[data-role="transporter"] .transport-card{height:100%;background:#fff;border:1px solid #e3e8eb;border-radius:16px;padding:20px;box-shadow:0 5px 20px rgba(20,40,30,.05);transition:box-shadow .2s,transform .2s}
+body[data-role="transporter"] .transport-card:hover{box-shadow:0 12px 26px rgba(20,40,30,.09);transform:translateY(-2px)}
+body[data-role="transporter"] .transport-card p{margin-bottom:9px;overflow-wrap:anywhere}
+body[data-role="transporter"] .transport-card .product-title{font-weight:700;color:#195e42}
+body[data-role="transporter"] .transport-action-form{margin-top:14px}
+body[data-role="transporter"] .transport-item[hidden]{display:none!important}
+@media(max-width:600px){body[data-role="transporter"] .transport-tools .form-control{max-width:none;width:100%}body[data-role="transporter"] .transport-card{padding:15px}}
+@media(prefers-reduced-motion:reduce){body[data-role="transporter"] .transport-card{transition:none}}

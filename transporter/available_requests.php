@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once __DIR__ . "/../includes/security.php";
 
 // حماية الصفحة – فقط الناقل
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "transporter") {
@@ -26,7 +26,7 @@ $stmt = $conn->prepare("
     JOIN products  p ON tr.product_id = p.product_id
     JOIN stores    s ON tr.store_id   = s.store_id
     JOIN farmers   f ON tr.farmer_id  = f.farmer_id
-    WHERE LOWER(tr.status) = 'pending'
+    WHERE LOWER(tr.status) = 'pending' AND tr.transporter_id IS NULL
     ORDER BY tr.request_date DESC
 ");
 $stmt->execute();
@@ -37,6 +37,7 @@ $requests = $stmt->get_result();
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar' ? "الطلبات المتاحة" : "Available Transport Requests"); ?></title>
 
     <!-- STYLES -->
@@ -45,6 +46,7 @@ $requests = $stmt->get_result();
 
     <link rel="stylesheet" href="../css/style.css?v=12">
     <link rel="stylesheet" href="../css/brand.css?v=2">
+    <link rel="stylesheet" href="../css/transporter-requests-v2.css?v=1">
 <link rel="stylesheet" href="../css/farmer.css?v=12">
     <?php if ($lang_code === 'ar'): ?>
         <link rel="stylesheet" href="../css/style_ar.css?v=12">
@@ -80,8 +82,16 @@ $requests = $stmt->get_result();
         </div>
     <?php endif; ?>
 
+    <div class="transport-tools mb-3">
+      <label class="visually-hidden" for="transport-search"><?= $lang_code === 'ar' ? 'بحث في طلبات النقل' : 'Search transport requests' ?></label>
+      <input id="transport-search" class="form-control" type="search" autocomplete="off" placeholder="<?= $lang_code === 'ar' ? 'ابحث عن محصول أو متجر أو مزارع...' : 'Search crop, store or farmer...' ?>">
+      <span id="transport-count" class="small text-muted" aria-live="polite"></span>
+    </div>
+    <?php if (isset($_GET['err'])): ?>
+      <div class="alert alert-warning" role="alert"><?= $lang_code === 'ar' ? 'تعذّر تنفيذ العملية. حدّث الصفحة وحاول مجددًا.' : 'Action could not be completed. Refresh and retry.' ?></div>
+    <?php endif; ?>
     <!-- REQUEST LIST -->
-    <div class="row g-3">
+    <div class="row g-3" id="transport-request-grid">
 
         <?php if ($requests->num_rows === 0): ?>
             <div class="col-12">
@@ -97,8 +107,8 @@ $requests = $stmt->get_result();
         <?php else: ?>
 
             <?php while ($row = $requests->fetch_assoc()): ?>
-                <div class="col-md-6 col-lg-4">
-                    <div class="product-card">
+                <div class="col-md-6 col-lg-4 transport-item">
+                    <article class="product-card transport-card">
 
                         <h5 class="product-title mb-2">
                             <i class="fa-solid fa-box"></i>
@@ -142,16 +152,17 @@ $requests = $stmt->get_result();
                         </p>
 
                         <div class="mt-3 text-end">
-                            <form method="post" action="accept_request.php">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
-                                <button type="submit" class="btn btn-success btn-sm">
+                            <form method="POST" action="accept_request.php" class="transport-action-form">
+                              <?= csrf_field() ?>
+                              <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                              <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fa-solid fa-check"></i>
                                 <?= ($lang_code === 'ar' ? "قبول الطلب" : "Accept Request"); ?>
-                                </button></form>
+                              </button>
+                            </form>
                         </div>
 
-                    </div>
+                    </article>
                 </div>
             <?php endwhile; ?>
 
@@ -161,6 +172,6 @@ $requests = $stmt->get_result();
 </div>    
 
 </div>
-
+<script src="../js/transporter-requests-v2.js?v=1" defer></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . "/../includes/security.php";
 session_start();
 include "../includes/language.php";
 include "../config/db.php";
+require_once __DIR__ . "/../includes/security.php";
 
 // حماية الصفحة – فقط الناقل
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== "transporter") {
@@ -32,6 +32,7 @@ $requests = $stmt->get_result();
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= ($lang_code === 'ar' ? "طلباتي" : "My Requests"); ?></title>
 
     <!-- Styles -->
@@ -40,6 +41,7 @@ $requests = $stmt->get_result();
 
     <link rel="stylesheet" href="../css/style.css?v=12">
     <link rel="stylesheet" href="../css/brand.css?v=2">
+    <link rel="stylesheet" href="../css/transporter-requests-v2.css?v=1">
 <link rel="stylesheet" href="../css/farmer.css?v=12">
 
     <?php if ($lang_code === 'ar'): ?>
@@ -69,8 +71,16 @@ $requests = $stmt->get_result();
         <?= ($lang_code === 'ar' ? "طلباتي" : "My Transport Requests"); ?>
     </h3>
 
+    <div class="transport-tools mb-3">
+      <label class="visually-hidden" for="transport-search"><?= $lang_code === 'ar' ? 'بحث في طلبات النقل' : 'Search transport requests' ?></label>
+      <input id="transport-search" class="form-control" type="search" autocomplete="off" placeholder="<?= $lang_code === 'ar' ? 'ابحث عن محصول أو متجر أو مزارع...' : 'Search crop, store or farmer...' ?>">
+      <span id="transport-count" class="small text-muted" aria-live="polite"></span>
+    </div>
+    <?php if (isset($_GET['err'])): ?>
+      <div class="alert alert-warning" role="alert"><?= $lang_code === 'ar' ? 'تعذّر تنفيذ العملية. حدّث الصفحة وحاول مجددًا.' : 'Action could not be completed. Refresh and retry.' ?></div>
+    <?php endif; ?>
     <!-- REQUEST LIST -->
-    <div class="row g-3">
+    <div class="row g-3" id="transport-request-grid">
 
         <?php if ($requests->num_rows === 0): ?>
             <div class="col-12">
@@ -88,8 +98,8 @@ $requests = $stmt->get_result();
             <?php while ($row = $requests->fetch_assoc()): ?>
 
                 <!-- بطاقة الطلب -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="product-card">
+                <div class="col-md-6 col-lg-4 transport-item">
+                    <article class="product-card transport-card">
 
                         <h5 class="product-title mb-2">
                             <i class="fa-solid fa-box"></i>
@@ -116,7 +126,7 @@ $requests = $stmt->get_result();
 
                         <p>
                             <strong><?= ($lang_code === 'ar' ? "التاريخ:" : "Date:"); ?></strong>
-                            <span class="badge bg-light text-dark"><?= $row['request_date']; ?></span>
+                            <span class="badge bg-light text-dark"><?= htmlspecialchars((string)$row['request_date'], ENT_QUOTES, 'UTF-8'); ?></span>
                         </p>
 
                         <p>
@@ -131,27 +141,29 @@ $requests = $stmt->get_result();
                                 if ($status === "delivered" || $status === "completed") $badge = "success";
                             ?>
 
-                            <span class="badge bg-<?= $badge ?>"><?= ucfirst($status); ?></span>
+                            <span class="badge bg-<?= $badge ?>"><?= htmlspecialchars(ucfirst($status), ENT_QUOTES, 'UTF-8'); ?></span>
                         </p>
 
                         <?php if ($status === 'accepted'): ?>
-                            <form method="post" action="update_request_status.php">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
-                                <input type="hidden" name="action" value="start">
-                                <button type="submit" class="btn btn-outline-primary w-100">
+                            <form method="POST" action="update_request_status.php" class="transport-action-form">
+                              <?= csrf_field() ?>
+                              <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                              <input type="hidden" name="action" value="start">
+                              <button type="submit" class="btn btn-outline-primary w-100">
                                 <i class="fa-solid fa-play"></i>
                                 <?= ($lang_code === 'ar') ? "بدء التوصيل" : "Start Delivery"; ?>
-                            </button></form>
+                              </button>
+                            </form>
                         <?php elseif ($status === 'in_progress'): ?>
-                            <form method="post" action="update_request_status.php">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
-                                <input type="hidden" name="action" value="deliver">
-                                <button type="submit" class="btn btn-success w-100">
+                            <form method="POST" action="update_request_status.php" class="transport-action-form">
+                              <?= csrf_field() ?>
+                              <input type="hidden" name="id" value="<?= (int)$row['request_id'] ?>">
+                              <input type="hidden" name="action" value="deliver">
+                              <button type="submit" class="btn btn-success w-100">
                                 <i class="fa-solid fa-circle-check"></i>
                                 <?= ($lang_code === 'ar') ? "تم التسليم" : "Mark Delivered"; ?>
-                            </button></form>
+                              </button>
+                            </form>
                         <?php endif; ?>
 
                     </div>
